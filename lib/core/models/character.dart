@@ -12,7 +12,7 @@ class Character {
   final String? eyeColor;
   final String? birthYear;
   final String? homeworld;
-  final List<String>? species;
+  final List<String> species;
 
   Character({
     required this.name,
@@ -24,7 +24,7 @@ class Character {
     this.eyeColor,
     this.birthYear,
     this.homeworld,
-    this.species,
+    required this.species,
   });
 
   Character copyWith({
@@ -79,7 +79,7 @@ class Character {
       eyeColor: map['eye_color'],
       birthYear: map['birth_year'],
       homeworld: map['homeworld'],
-      species: List<String>.from(map['species']),
+      species: List<String>.from(map['species'] ?? []),
     );
   }
 

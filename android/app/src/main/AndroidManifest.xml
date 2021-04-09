@@ -2,7 +2,8 @@
     package="com.example.star_wars_wiki">
    <application
         android:label="star_wars_wiki"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:usesCleartextTraffic="true">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

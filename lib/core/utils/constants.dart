@@ -4,4 +4,7 @@ class Constants {
 
   static const successMessage = 'Sucesso!';
   static const errorMessage = 'Something went wrong :(';
+
+  // Prefs
+  static const favoritesPrefs = 'favorites_prefs';
 }

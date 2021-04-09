@@ -209,7 +209,7 @@ class HomeModel extends ChangeNotifier {
     }
   }
 
-  Future<void> onItemFavorite(Character character, bool favorite) async {
+  Future<void> onItemFavorited(Character character, bool favorite) async {
     try {
       if (favorite) {
         await _removeFavorite(character);

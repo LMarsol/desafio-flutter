@@ -3,6 +3,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:star_wars_wiki/core/models/character.dart';
+import 'package:star_wars_wiki/ui/components/background.dart';
+import 'package:star_wars_wiki/ui/components/character_card.dart';
 import 'package:star_wars_wiki/ui/utils/ui_constants.dart';
 import 'package:star_wars_wiki/core/viewmodels/home_model.dart';
 
@@ -44,21 +46,14 @@ class _HomeViewState extends State<HomeView> {
               )
             ],
           ),
-          body: Container(
+          body: Background(
+            url: UIConstants.homeBg,
             child: model.isLoading && model.characters.isEmpty
                 ? _buildLoading()
                 : _buildBody(
                     context,
                     model,
                   ),
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage(
-                  UIConstants.homeBg,
-                ),
-                fit: BoxFit.cover,
-              ),
-            ),
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: model.onFavoriteModeChanged,
@@ -103,56 +98,10 @@ class _HomeViewState extends State<HomeView> {
           Character character = model.characters[index];
           bool favorite = model.favorites.indexOf(character.name) != -1;
 
-          return InkWell(
-            onTap: () => Navigator.pushNamed(
-              context,
-              'character',
-              arguments: {'character': character},
-            ),
-            child: Card(
-              color: Color(0xFF272727),
-              child: Padding(
-                padding: const EdgeInsets.all(14),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '${character.name}',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.yellowAccent,
-                            fontWeight: FontWeight.bold,
-                            fontStyle: FontStyle.italic,
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () =>
-                              model.onItemFavorite(character, favorite),
-                          child: favorite
-                              ? Icon(
-                                  Icons.star,
-                                  color: Colors.yellow,
-                                )
-                              : Icon(
-                                  Icons.star_outline,
-                                  color: Colors.white,
-                                ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    _buildCharFeature('Height: ${character.height}'),
-                    _buildCharFeature('Gender: ${character.gender}'),
-                    _buildCharFeature('Mass: ${character.mass}'),
-                  ],
-                ),
-              ),
-            ),
+          return CharacterCard(
+            character: character,
+            favorite: favorite,
+            onItemFavorited: () => model.onItemFavorited(character, favorite),
           );
         },
       ),
@@ -185,17 +134,6 @@ class _HomeViewState extends State<HomeView> {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildCharFeature(String feature) {
-    return Text(
-      feature,
-      style: TextStyle(
-        fontSize: 16,
-        color: Colors.white,
-        fontWeight: FontWeight.bold,
       ),
     );
   }

@@ -12,16 +12,18 @@ class HttpHelper {
     dynamic? body,
     Map<String, dynamic>? queryParameters,
     Encoding? encoding,
+    Uri? customUri,
   }) async {
     http.Response response;
     Map<String, dynamic> responseBody;
 
     try {
-      Uri uri = Uri.https(
-        Constants.swUrl,
-        Constants.swApiPath + path,
-        queryParameters,
-      );
+      Uri uri = customUri ??
+          Uri.https(
+            Constants.swUrl,
+            Constants.swApiPath + path,
+            queryParameters,
+          );
 
       response = await _invoke(
         uri,
@@ -80,7 +82,7 @@ class HttpHelper {
           break;
       }
 
-      if (response.statusCode != 200) {
+      if (response.statusCode != 200 && response.statusCode != 201) {
         throw ApiException();
       }
 

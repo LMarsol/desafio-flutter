@@ -4,6 +4,7 @@ import 'package:star_wars_wiki/core/models/character.dart';
 import 'package:star_wars_wiki/core/models/sw_request.dart';
 import 'package:star_wars_wiki/core/repositories/characters_repository.dart';
 import 'package:star_wars_wiki/core/repositories/favorites_repository.dart';
+import 'package:star_wars_wiki/core/services/favorites_service.dart';
 import 'package:star_wars_wiki/core/services/people_service.dart';
 import 'package:star_wars_wiki/core/utils/constants.dart';
 import 'package:star_wars_wiki/core/utils/network_info.dart';
@@ -13,8 +14,10 @@ class HomeModel extends ChangeNotifier {
   late final BuildContext context;
 
   HomeModel() {
-    this._getFavorites();
     this.getCharacters();
+
+    this._getFavorites();
+    this._sendWaitingReqs();
   }
 
   SwRequest? _swRequest;
@@ -47,9 +50,13 @@ class HomeModel extends ChangeNotifier {
   List<Character> get characters => favoriteMode
       ? List.from(
           _characters.where(
-            (char) => favorites.indexOf(char.name) != -1 && _searchText != null
-                ? char.name.toLowerCase().contains(_searchText!.toLowerCase())
-                : true,
+            (char) => favorites.indexOf(char.name) != -1
+                ? _searchText != null
+                    ? char.name
+                        .toLowerCase()
+                        .contains(_searchText!.toLowerCase())
+                    : true
+                : false,
           ),
         )
       : List.from(
@@ -181,6 +188,7 @@ class HomeModel extends ChangeNotifier {
 
   Future<void> _addFavorite(Character character) async {
     try {
+      await FavoritesService().addFavorite(character);
       await FavoritesRepository().addFavorite(character);
 
       List<String> newFavorites = List.from(favorites);
@@ -206,6 +214,14 @@ class HomeModel extends ChangeNotifier {
       Utils.showBottomMessage(context, Constants.successMessage);
     } catch (e) {
       Utils.showBottomMessage(context, Constants.errorMessage);
+    }
+  }
+
+  Future<void> _sendWaitingReqs() async {
+    try {
+      await FavoritesService().retryReqsIfAny();
+    } catch (e) {
+      print('Error: $e');
     }
   }
 

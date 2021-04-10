@@ -4,7 +4,7 @@ import 'package:star_wars_wiki/core/models/character.dart';
 class CharacterCard extends StatelessWidget {
   final Character character;
   final bool favorite;
-  final Function() onItemFavorited;
+  final Function onItemFavorited;
 
   const CharacterCard({
     Key? key,
@@ -41,7 +41,9 @@ class CharacterCard extends StatelessWidget {
                     ),
                   ),
                   GestureDetector(
-                    onTap: onItemFavorited,
+                    onTap: () {
+                      onItemFavorited();
+                    },
                     child: favorite
                         ? Icon(
                             Icons.star,
